@@ -4,94 +4,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="script.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <title>Weather WebApp</title>
 </head>
 <body>
-    <select name="Country" id="selector">
-    </select>
-    <select name="City" id="selector2">
-    </select>
-    <script>
-        document.addEventListener('DOMContentLoaded', ()=>{
-
-            var urlCountries = 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/countries.json'
-            var urlStates = 'https://raw.githubusercontent.com/dr5hn/countries-states-cities-database/master/states.json'
-
-            var form = document.querySelector('Form')
-            var option = document.querySelector('#selector')
-            var option2 = document.querySelector('#selector2')
-            var removedOptions = document.createElement('div');
-            document.body.appendChild(removedOptions)
-            removedOptions.setAttribute('hidden', true)
-
-
-            var CountryCode;
-            fetch(urlCountries)
-            .then(response => {return response.json()})
-            .then(data => {
-                data.forEach((i) => {
-                    var CountryOption = document.createElement('option')
-                    CountryOption.innerText = i.name
-                    option.appendChild(CountryOption)
-                })
-                console.log(data)
-                return data
-            })
-            .then(Datass => {
-                var selectedOption = option.options[option.selectedIndex];
-
-                CountryCode = Datass.filter(cc => cc.name == selectedOption.innerText)
-                CountryCode = CountryCode[0].iso2
-                console.log(CountryCode)
-                fetch(urlStates)
-                .then(response => {return response.json()})
-                .then(data => {
-                    var selectedOption2 = option2.options[option2.selectedIndex];
-
-                    var filteredData = data.filter(st => st.country_code == CountryCode)
-                    filteredData.forEach((j) => {
-                        var StateOption = document.createElement('option')
-                        StateOption.innerText = j.name
-                        option2.appendChild(StateOption)
-                        if (StateOption.innerText.includes(' ')){
-                            StateOption.innerText.replace(' ', '_')
-                        }
-                        StateOption.classList.add('option' + selectedOption.innerText)
-                        StateOption.dataset.latitude = j.latitude
-                        StateOption.dataset.longitude = j.longitude
-                    })
-                    
-                    option.addEventListener('change', (e)=>{
-                        e.preventDefault();
-                        option2 = document.querySelector('#selector2')
-                        selectedOption = option.options[option.selectedIndex];
-                        selectedOption2 = option2.options[option2.selectedIndex];
-                        CountryCode = Datass.filter(cc => cc.name == selectedOption.innerText)
-                        CountryCode = CountryCode[0].iso2
-                        filteredData = data.filter(st => st.country_code == CountryCode)    
-                        console.log(CountryCode)
-                        console.log(filteredData)
-                        
-                        for (let i = option2.options.length - 1; i >= 0; i--) {
-                            option2.remove(i);
-                        }
-                        filteredData.forEach((j) => {
-                            StateOption = document.createElement('option')
-                            StateOption.innerText = j.name
-                            StateOption.classList.add('option' + selectedOption.innerText.replace(/ /g, '_'));
-                            StateOption.dataset.latitude = j.latitude;
-                            StateOption.dataset.longitude = j.longitude;
-
-                            option2.appendChild(StateOption);
-                        })
-                    })
-                })
-
-
-            })
-        })
-
- 
-    </script>
+    <div class="divSelector">
+        <select name="Country" id="selector"></select>
+        <select name="City" id="selector2"></select>
+    </div>
+    <div class="points">
+        <div id="myChart" style="width: 60%; height: 60%;"></div>
+    </div>
 </body>
 </html>
